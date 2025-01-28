@@ -5,7 +5,7 @@
 //  Created by Yerkebulan on 15.12.2024.
 //
 
-struct CoinModel {
+struct CoinModel: Codable, Identifiable {
     let id, symbol, name: String
     let image: String
     let currentPrice: Double

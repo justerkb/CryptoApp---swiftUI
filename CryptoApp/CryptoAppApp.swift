@@ -9,10 +9,14 @@ import SwiftUI
 
 @main
 struct CryptoAppApp: App {
+    
+    @StateObject var homeVM = HomeViewModel()
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
-                
+                .environmentObject(homeVM)
         }
     }
 }
+

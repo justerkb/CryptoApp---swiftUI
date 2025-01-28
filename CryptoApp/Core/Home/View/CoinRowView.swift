@@ -12,13 +12,13 @@ struct CoinRowView: View {
     let coin: CoinModel
      
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             Text("\(Int(coin.marketCapRank ?? 0))")
                 .font(.caption)
                 .frame(minWidth: 30)
-                .background(Color.blue)
+//                .background(Color.blue)
             Circle()
-                .frame(width: 20, height: 20)
+                .frame(width: 30, height: 30)
             Text(coin.symbol.uppercased())
                 .font(.headline)
                 .padding(.leading, 6)
@@ -34,11 +34,13 @@ struct CoinRowView: View {
                         (coin.athChangePercentage ?? 0 ) >= 0 ? Color.green : Color.red
                     )
             }
+            .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
         }
-        .background(Color.green)
-        
-        
+//        .background(Color.green)
+        .font(.subheadline)
     }
+    
+    
 }
 
 

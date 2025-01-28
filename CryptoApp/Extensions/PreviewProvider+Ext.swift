@@ -19,7 +19,9 @@ extension PreviewProvider {
 class MocData {
     public static let shared = MocData()
     
-    private init() { }
+    private init() {}
+    
+    let homeVM = HomeViewModel()
     
     let coin = CoinModel(
        id: "bitcoin",
