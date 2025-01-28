@@ -11,6 +11,11 @@ import Combine
 
 class CoinDataService {
     
+    enum NetworkingErrors: String, Error {
+        case badURL = "Bad responce from URL"
+        case unowned = "Unkown error occurred"
+    }
+    
     @Published var allCoins: [CoinModel] = []
     var cancalable = Set<AnyCancellable>()
     private var coinSubscribption : AnyCancellable?
@@ -25,30 +30,16 @@ class CoinDataService {
         
         guard let url = URL(string: endpoint) else { return }
         
-        coinSubscribption = URLSession.shared.dataTaskPublisher(for: url)
-            .subscribe(on: DispatchQueue.global(qos: .default))
-            .tryMap{ (output) -> Data in
-                guard let responce = output.response as? HTTPURLResponse, responce.statusCode >= 200 && responce.statusCode < 300 else {
-                    throw URLError(.badServerResponse)
-                }
-                return output.data
-            }
-            .receive(on: DispatchQueue.main)
+        coinSubscribption = NetworkManager.shared.download(url: url) 
             .decode(type: [CoinModel].self, decoder: {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return decoder
             }())
-            .sink(receiveCompletion: { (completion) in
-                switch completion {
-                case .failure(let error):
-                    print("Error: \(error)")
-                case .finished:
-                    break
-                }
-            }, receiveValue: { [weak self] returnedCoins in
+            .sink(receiveCompletion: NetworkManager.shared.handleCompletion, receiveValue: { [weak self] returnedCoins in
                 print(returnedCoins)
                 self?.allCoins = returnedCoins
+                self?.coinSubscribption?.cancel()
             })
     }
 }
