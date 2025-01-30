@@ -11,6 +11,7 @@ struct HomeView: View {
     
     @State private var showPortfolio: Bool = true
     @EnvironmentObject private var homeVM: HomeViewModel
+
     
     var body: some View {
         ZStack {
@@ -18,6 +19,9 @@ struct HomeView: View {
                 
             VStack {
                 headerView
+                
+                SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
+                
                 
                 HStack {
                     Text("Coin")

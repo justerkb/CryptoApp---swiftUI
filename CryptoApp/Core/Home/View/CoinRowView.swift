@@ -28,7 +28,7 @@ struct CoinRowView: View {
                     .foregroundStyle(Color.theme.accent)
                 Text(coin.priceChangePercentage24H?.asPercentage() ?? "%0,00")
                     .foregroundStyle(
-                        (coin.athChangePercentage ?? 0 ) >= 0 ? Color.green : Color.red
+                        ((coin.priceChangePercentage24H ?? 0) ) >= 0 ? Color.green : Color.red
                     )
             }
             .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
