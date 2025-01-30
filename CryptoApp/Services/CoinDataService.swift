@@ -11,12 +11,8 @@ import Combine
 
 class CoinDataService {
     
-    enum NetworkingErrors: String, Error {
-        case badURL = "Bad responce from URL"
-        case unowned = "Unkown error occurred"
-    }
-    
     @Published var allCoins: [CoinModel] = []
+    
     var cancalable = Set<AnyCancellable>()
     private var coinSubscribption : AnyCancellable?
 
@@ -42,4 +38,6 @@ class CoinDataService {
                 self?.coinSubscribption?.cancel()
             })
     }
+    
+    
 }

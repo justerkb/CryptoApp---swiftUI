@@ -17,15 +17,9 @@ struct CoinRowView: View {
                 .font(.caption)
                 .frame(minWidth: 30)
 //                .background(Color.blue)
-            AsyncImage(url: URL(string: coin.image)){ result in
-                        result.image?
-                            .resizable()
-                            .scaledToFill()
-                    }
-                    .frame(width: 30, height: 30)
-                .font(.headline)
-                .padding(.leading, 6)
-                .foregroundStyle(Color.theme.accent)
+            CoinImageView(coin: coin)
+                .frame(maxWidth: 30, maxHeight: 30)
+                
             Spacer()
             
             VStack(alignment: .trailing) {

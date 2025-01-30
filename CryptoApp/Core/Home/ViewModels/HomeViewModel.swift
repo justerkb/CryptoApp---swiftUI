@@ -25,7 +25,6 @@ class HomeViewModel: ObservableObject {
         dataService.$allCoins
             .sink { [weak self] coins in
                 self?.allCoins = coins
-                print(self?.allCoins)
             }
             .store(in: &cancellables)
     }
