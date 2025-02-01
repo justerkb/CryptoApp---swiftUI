@@ -9,18 +9,23 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @State private var showPortfolio: Bool = true
     @EnvironmentObject private var homeVM: HomeViewModel
 
     
     var body: some View {
         ZStack {
             Color.theme.background
+//                .ignoresSafeArea()
                 
-            VStack {
+            VStack(spacing: 18) {
                 headerView
+//                    .padding(.horizontal)
+                
+                HomeStatisticsView(homeVM: homeVM)
+
                 
                 SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
+                
                 
                 
                 HStack {
@@ -29,11 +34,11 @@ struct HomeView: View {
                     Text("Holdings")
                     Text("Price")
                 }
-                .padding(.horizontal)
+//                .padding(.horizontal)
                 .font(.caption)
                 .foregroundStyle(Color.theme.secondaryText)
                 
-                if !showPortfolio {
+                if !homeVM.showPortfolio {
                     allCoinsList
                 } else {
                     portfolioList
@@ -42,7 +47,7 @@ struct HomeView: View {
                 
                 Spacer()
             }
-//            .padding(.horizontal)
+            .padding(.horizontal)
         }
     }
 }
@@ -59,12 +64,12 @@ extension HomeView {
     
     private var headerView: some View {
         HStack {
-            CircleButton(iconName: showPortfolio ? "plus" : "info")
+            CircleButton(iconName: homeVM.showPortfolio ? "plus" : "info")
                 .background(
-                    CircleButtinAnimationView(animate: $showPortfolio)
+                    CircleButtinAnimationView(animate: $homeVM.showPortfolio)
                 )
             Spacer()
-            Text(showPortfolio ? "Portfolio": "Live prices")
+            Text(homeVM.showPortfolio ? "Portfolio": "Live prices")
                 .font(.headline)
                 .fontWeight(.heavy)
                 .foregroundStyle(.accent)
@@ -72,14 +77,14 @@ extension HomeView {
             
             Spacer()
             CircleButton(iconName: "chevron.right")
-                .rotationEffect(.degrees(showPortfolio ? 180: 0))
+                .rotationEffect(.degrees(homeVM.showPortfolio ? 180: 0))
                 .onTapGesture {
                     withAnimation(.spring, {
-                        showPortfolio.toggle()
+                        homeVM.showPortfolio.toggle()
                     })
                 }
         }
-        .padding(.horizontal)
+//        .padding(.horizontal)
     }
     
     private var allCoinsList: some View {
@@ -91,7 +96,7 @@ extension HomeView {
         }
         .transition(.move(edge: .leading))
         .listStyle(PlainListStyle())
-        .padding(.horizontal)
+//        .padding(.horizontal)
     }
     
     private var portfolioList: some View {

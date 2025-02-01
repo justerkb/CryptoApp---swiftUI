@@ -20,6 +20,12 @@ struct CoinRowView: View {
             CoinImageView(coin: coin)
                 .frame(maxWidth: 30, maxHeight: 30)
                 
+            Text(coin.symbol.uppercased())
+                .font(.headline)
+                .foregroundStyle(Color.theme.accent)
+                
+                .padding(.horizontal)
+                
             Spacer()
             
             VStack(alignment: .trailing) {
@@ -31,6 +37,7 @@ struct CoinRowView: View {
                         ((coin.priceChangePercentage24H ?? 0) ) >= 0 ? Color.green : Color.red
                     )
             }
+            
             .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
         }
 //        .background(Color.green)
