@@ -10,19 +10,22 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject private var homeVM: HomeViewModel
-
+    @State var showPortfolioView: Bool = false
+    
     
     var body: some View {
         ZStack {
             Color.theme.background
-//                .ignoresSafeArea()
-                
+                .sheet(isPresented: $showPortfolioView, content: {
+                PortfolioView()
+                    .environmentObject(homeVM)
+            })
+            
             VStack(spacing: 18) {
                 headerView
 //                    .padding(.horizontal)
                 
                 HomeStatisticsView(homeVM: homeVM)
-
                 
                 SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
                 
@@ -34,6 +37,7 @@ struct HomeView: View {
                     Text("Holdings")
                     Text("Price")
                 }
+                
 //                .padding(.horizontal)
                 .font(.caption)
                 .foregroundStyle(Color.theme.secondaryText)
@@ -46,6 +50,7 @@ struct HomeView: View {
                 
                 
                 Spacer()
+                    
             }
             .padding(.horizontal)
         }
@@ -68,6 +73,9 @@ extension HomeView {
                 .background(
                     CircleButtinAnimationView(animate: $homeVM.showPortfolio)
                 )
+                .onTapGesture {
+                    showPortfolioView.toggle()
+                }
             Spacer()
             Text(homeVM.showPortfolio ? "Portfolio": "Live prices")
                 .font(.headline)

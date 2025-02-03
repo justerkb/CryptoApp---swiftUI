@@ -5,7 +5,7 @@
 //  Created by Yerkebulan on 15.12.2024.
 //
 
-struct CoinModel: Codable, Identifiable {
+struct CoinModel: Codable, Identifiable, Equatable {
     let id, symbol, name: String
     let image: String
     let currentPrice: Double
@@ -27,6 +27,6 @@ struct CoinModel: Codable, Identifiable {
 }
 
 
-struct SparklineIn7D: Codable {
+struct SparklineIn7D: Codable, Equatable {
     let price: [Double]?
 }
