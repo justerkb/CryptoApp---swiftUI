@@ -26,10 +26,11 @@ struct HomeView: View {
 //                    .padding(.horizontal)
                 
                 HomeStatisticsView(homeVM: homeVM)
+                    .padding(EdgeInsets(top: 30, leading: 0, bottom: 30, trailing: 0))
                 
                 SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
-                
-                
+                    .padding(.horizontal)
+
                 
                 HStack {
                     Text("Coin")
@@ -37,6 +38,7 @@ struct HomeView: View {
                     Text("Holdings")
                     Text("Price")
                 }
+                .padding(.horizontal)
                 
 //                .padding(.horizontal)
                 .font(.caption)
@@ -92,19 +94,19 @@ extension HomeView {
                     })
                 }
         }
-//        .padding(.horizontal)
+        .padding(.horizontal, 32)
     }
     
     private var allCoinsList: some View {
         List {
             ForEach(homeVM.allCoins) { coin in
                 CoinRowView(coin: coin)
-                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
             }
         }
+//        .padding(.horizontal)
         .transition(.move(edge: .leading))
         .listStyle(PlainListStyle())
-//        .padding(.horizontal)
     }
     
     private var portfolioList: some View {
