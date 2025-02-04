@@ -7,10 +7,9 @@
 
 import SwiftUI
 
-struct CoinColumnView: View {
+struct CoinLogoView: View {
     
     let coin: CoinModel
-    var isSelected: Bool
     
     var body: some View {
         VStack {
@@ -19,21 +18,19 @@ struct CoinColumnView: View {
             Text(coin.symbol.uppercased())
                 .foregroundStyle(.accent)
                 .font(.headline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+
             Text(coin.name)
                 .foregroundStyle(.secondaryText)
                 .font(.caption)
+                .lineLimit(2)
+                .minimumScaleFactor(0.5)
+                .multilineTextAlignment(.center)
         }
-        .padding(.horizontal)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(.green, lineWidth: isSelected ? 2 : 0)
-            
-        )
-        
-        
     }
 }
 
 #Preview {
-    CoinColumnView(coin: MocData.shared.coin, isSelected: true)
+    CoinLogoView(coin: MocData.shared.coin)
 }

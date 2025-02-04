@@ -11,41 +11,129 @@ struct PortfolioView: View {
     
     @EnvironmentObject var homeVM: HomeViewModel
     @State var selectedCoin: CoinModel?
-    
+    @Environment(\.presentationMode) var presentationMode
+    @State var text: String = ""
+    @State var amount: Double = 0.0
+    @State var showChekMark: Bool = false
     
     var body: some View {
         
         NavigationStack {
             
-            VStack {
+            VStack(spacing: 0) {
                 SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
                     .padding(.top, 12)
                     .padding(.horizontal)
                 
                 ScrollView(.horizontal, showsIndicators: false){
-                    HStack {
+                    LazyHStack(spacing:10) {
                         ForEach(homeVM.allPortfolioCoins) { coin in
-                            CoinColumnView(coin: coin, isSelected: selectedCoin == coin)
+                            CoinLogoView(coin: coin)
+                                .frame(width: 75)
+//                                .background(Color.red)
                                 .onTapGesture(perform: {
-                                    self.selectedCoin = coin
-                                    print(selectedCoin?.name)
+                                    withAnimation {
+                                        self.selectedCoin = coin
+                                    }
                                 })
-                                .frame(width: UIScreen.main.bounds.width / 4)
+                                .padding(4)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(.green, lineWidth: (selectedCoin?.id == coin.id) ? 1 : 0)
+                                )
+                            
                         }
-
                     }
+                    .frame(height: 120)
+                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 0))
                 }
+                
+                if let coin = selectedCoin {
+                    HStack {
+                        Text("Current price of \(coin.symbol.uppercased())")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        Text(coin.currentPrice.asCurrencyWith6Decimals())
+                            .fontWeight(.semibold)
+                    }
+                    .padding()
+                    Divider()
+                    HStack {
+                        Text("Amount holding")
+                        Spacer()
+                        TextField("Ex: 1.4", text: $text)
+                            .onChange(of: text, {
+                                self.amount = Double(text) ?? 0.0
+                            })
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                        
+                    }
+                    .padding()
+                    
+                    Divider()
+                    HStack {
+                        Text("Current value:")
+                        Spacer()
+                        Text((amount * coin.currentPrice).asCurrencyWith6Decimals())
+                            .fontWeight(.semibold)
+                    }
+                    .padding()
+                }
+                
                 Spacer()
-
             }
             
             .navigationTitle("Edit Portfolio")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        HStack(alignment: .top) {
+                            if showChekMark {
+                                Image(systemName: "checkmark")
+                            }
+        
+                            
+                            Button("SAVE") {
+                                saveButtonPressed()
+                            }
+                            .opacity(
+                                (amount > 0 && !showChekMark) ? 1 : 0
+                            )
+                        }
+                        .font(.headline)
+
+
+                    }
+                
+                
+            }
             
         }
+    }
+    
+    private func saveButtonPressed() {
         
-      
-
+        withAnimation(.easeIn) {
+            showChekMark = true
+        }
+        selectedCoin = nil
+        amount = 0.0
+        text = ""
+        //hide keyBoard
+        ///.....
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            showChekMark = false
+        })
+        
         
     }
     
@@ -53,6 +141,8 @@ struct PortfolioView: View {
 
 #Preview {
     let homeVM = HomeViewModel()
+    @State var text = ""
+
     PortfolioView()
         .environmentObject(homeVM)
     

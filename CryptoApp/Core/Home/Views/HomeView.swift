@@ -17,8 +17,8 @@ struct HomeView: View {
         ZStack {
             Color.theme.background
                 .sheet(isPresented: $showPortfolioView, content: {
-                PortfolioView()
-                    .environmentObject(homeVM)
+                    PortfolioView()
+                        .environmentObject(homeVM)
             })
             
             VStack(spacing: 18) {
