@@ -23,7 +23,18 @@ struct CoinModel: Codable, Identifiable, Equatable {
     let lastUpdated: String?
     let sparklineIn7D: SparklineIn7D?
     let priceChangePercentage24HInCurrency: Double?
-    let currentHoldings: Double?
+    var currentHoldings: Double?
+    
+    func updateCurrentHoldings(value: Double) -> CoinModel {
+        var coin = self
+        coin.currentHoldings = value
+        return coin
+    }
+    
+    func currentHoldingsValue() -> Double? {
+        guard let currentHoldings = currentHoldings else { return nil }
+        return currentPrice * currentHoldings
+    }
 }
 
 

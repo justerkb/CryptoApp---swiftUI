@@ -27,6 +27,16 @@ struct CoinRowView: View {
                 .padding(.horizontal)
                 
             Spacer()
+//            
+            if let holding = coin.currentHoldings, let holdingValue = coin.currentHoldingsValue() {
+                VStack(alignment: .trailing) {
+                    Text(holdingValue.asCurrencyWith6Decimals())
+
+                    Text(holding.asNumberString())
+                }
+                .foregroundColor(Color.theme.accent)
+
+            }
             
             VStack(alignment: .trailing) {
                 Text(coin.currentPrice.asCurrencyWith6Decimals())

@@ -11,6 +11,7 @@ struct HomeView: View {
     
     @EnvironmentObject private var homeVM: HomeViewModel
     @State var showPortfolioView: Bool = false
+    private let portfolioDataService = PortfolioCoinDataService()
     
     
     var body: some View {
@@ -23,7 +24,6 @@ struct HomeView: View {
             
             VStack(spacing: 18) {
                 headerView
-//                    .padding(.horizontal)
                 
                 HomeStatisticsView(homeVM: homeVM)
                     .padding(EdgeInsets(top: 30, leading: 0, bottom: 30, trailing: 0))
@@ -40,7 +40,6 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 
-//                .padding(.horizontal)
                 .font(.caption)
                 .foregroundStyle(Color.theme.secondaryText)
                 
@@ -104,7 +103,6 @@ extension HomeView {
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
             }
         }
-//        .padding(.horizontal)
         .transition(.move(edge: .leading))
         .listStyle(PlainListStyle())
     }

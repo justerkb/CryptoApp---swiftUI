@@ -14,7 +14,9 @@ class HomeViewModel: ObservableObject {
     @Published var allPortfolioCoins: [CoinModel] = []
     @Published var portfolioCoins: [CoinModel] = []
     @Published var searchedCoinText: String = ""
+    @Published var coinToAddSearchText: String = ""
     @Published var showPortfolio: Bool = true
+    
 
     var searchedCoins: [CoinModel] {
         return allCoins.filter { coin in
@@ -22,6 +24,7 @@ class HomeViewModel: ObservableObject {
             coin.symbol.lowercased().contains(searchedCoinText.lowercased())
         }
     }
+    
     public let statistics: [StatisticModel] = [
        .init(title: "Market Cap", value: "$3.67", percentageChange: -2.54),
        .init(title: "24h Volume", value: "$146,23Bn"),
@@ -31,6 +34,7 @@ class HomeViewModel: ObservableObject {
 
     
     private let dataService = CoinDataService()
+    private let portfolioService = PortfolioCoinDataService()
     private var cancellables = Set<AnyCancellable>()
     
     
@@ -58,6 +62,46 @@ class HomeViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        
+        dataService.$allCoins
+            .combineLatest(portfolioService.$allEntities)
+            .sink { [weak self] coins, coinEntities in
+                let updatedCoins = self?.mapAllCoinsToPortfolioCoins(allCoins: coins, portfolioEntities: coinEntities)
+                self?.portfolioCoins = updatedCoins!
+            }
+            .store(in: &cancellables)
+        
+        $searchedCoinText
+            .combineLatest(dataService.$allCoins)
+            .sink { [weak self] text, startingCoins in
+                guard let self = self else { return }
+                
+                if !text.isEmpty {
+                    let filtredCoins = startingCoins.filter { coin in
+                        coin.name.lowercased().contains(text.lowercased()) ||
+                        coin.symbol.lowercased().contains(text.lowercased())
+                    }
+                    self.allPortfolioCoins = filtredCoins
+                    self.allCoins = filtredCoins
+                }
+            }
+            .store(in: &cancellables)
     }
     
+    
+    
+    public func updatePorfolio(coin: CoinModel, amount: Double) {
+        portfolioService.updatePorfolio(coin: coin, amount: amount)
+    }
+    
+    
+    private func mapAllCoinsToPortfolioCoins(allCoins: [CoinModel], portfolioEntities: [CoinEntity]) -> [CoinModel] {
+        allCoins
+            .compactMap { (coin) -> CoinModel? in
+                guard let entity = portfolioEntities.first(where: { $0.id == coin.id }) else {
+                    return nil
+                }
+                return coin.updateCurrentHoldings(value: entity.amount)
+            }
+    }
 }

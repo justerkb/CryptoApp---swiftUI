@@ -19,15 +19,14 @@ struct PortfolioView: View {
     var body: some View {
         
         NavigationStack {
-            
             VStack(spacing: 0) {
-                SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
+                SearchBarView(searchedCoinText: $homeVM.coinToAddSearchText)
                     .padding(.top, 12)
                     .padding(.horizontal)
                 
                 ScrollView(.horizontal, showsIndicators: false){
                     LazyHStack(spacing:10) {
-                        ForEach(homeVM.allPortfolioCoins) { coin in
+                        ForEach(homeVM.portfolioCoins) { coin in
                             CoinLogoView(coin: coin)
                                 .frame(width: 75)
 //                                .background(Color.red)
@@ -48,7 +47,7 @@ struct PortfolioView: View {
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 0))
                 }
                 
-                if let coin = selectedCoin {
+                if let coin = selectedCoin, !homeVM.searchedCoinText.isEmpty {
                     HStack {
                         Text("Current price of \(coin.symbol.uppercased())")
                             .fontWeight(.semibold)
@@ -124,9 +123,13 @@ struct PortfolioView: View {
         withAnimation(.easeIn) {
             showChekMark = true
         }
+        
+        homeVM.updatePorfolio(coin: selectedCoin!, amount: amount)
+        
         selectedCoin = nil
         amount = 0.0
         text = ""
+        homeVM.searchedCoinText = ""
         //hide keyBoard
         ///.....
         
