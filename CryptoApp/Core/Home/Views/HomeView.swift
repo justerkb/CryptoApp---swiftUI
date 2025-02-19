@@ -14,6 +14,7 @@ struct HomeView: View {
     private let portfolioDataService = PortfolioCoinDataService()
     
     
+    
     var body: some View {
         ZStack {
             Color.theme.background
@@ -34,9 +35,43 @@ struct HomeView: View {
                 
                 HStack {
                     Text("Coin")
+                    Button {
+                        withAnimation(.bouncy) {
+                            homeVM.toggleRankSortOption()
+                        }
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .opacity(homeVM.isSorted(by: .rankUp) || homeVM.isSorted(by: .rankDown) ? 1 : 0)
+                            .rotationEffect(.degrees(homeVM.isSorted(by: .rankUp) ? 180 : 0), anchor: .center)
+                            .padding(.trailing)
+                        
+                    }
+                    
+                    
                     Spacer()
-                    Text("Holdings")
                     Text("Price")
+                    Button {
+                        withAnimation(.bouncy) {
+                            homeVM.togglePriceSortOption()
+                        }
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .opacity(homeVM.isSorted(by: .priceUp) || homeVM.isSorted(by: .priceDown) ? 1 : 0)
+                            .rotationEffect(.degrees(homeVM.isSortedByPriceUp ? 180 : 0), anchor: .center)
+                            .padding(.trailing)
+                        
+                    }
+                    
+
+                    Button {
+                        withAnimation(.linear(duration: 0.2)) {
+                            homeVM.reloadAllCoins()
+                        }
+                    } label: {
+                        Image(systemName: "goforward")
+                            .rotationEffect(.degrees(homeVM.isLoading ? 360 : 0), anchor: .center)
+                    }
+
                 }
                 .padding(.horizontal)
                 

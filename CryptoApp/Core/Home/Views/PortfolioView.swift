@@ -20,16 +20,15 @@ struct PortfolioView: View {
         
         NavigationStack {
             VStack(spacing: 0) {
-                SearchBarView(searchedCoinText: $homeVM.coinToAddSearchText)
+                SearchBarView(searchedCoinText: $homeVM.searchedCoinText)
                     .padding(.top, 12)
                     .padding(.horizontal)
                 
                 ScrollView(.horizontal, showsIndicators: false){
                     LazyHStack(spacing:10) {
-                        ForEach(homeVM.portfolioCoins) { coin in
+                        ForEach(homeVM.searchedCoinText.isEmpty ? homeVM.portfolioCoins : homeVM.allCoins) { coin in
                             CoinLogoView(coin: coin)
                                 .frame(width: 75)
-//                                .background(Color.red)
                                 .onTapGesture(perform: {
                                     withAnimation {
                                         self.selectedCoin = coin
@@ -60,12 +59,13 @@ struct PortfolioView: View {
                     HStack {
                         Text("Amount holding")
                         Spacer()
-                        TextField("Ex: 1.4", text: $text)
-                            .onChange(of: text, {
-                                self.amount = Double(text) ?? 0.0
-                            })
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
+                        
+                        TextField(selectedCoin?.currentHoldings ?? 0 > 0 ? "\(selectedCoin!.currentHoldings!)" : "Ex: 1.4", text: $text)
+                                .onChange(of: text) { _, newValue in
+                                    self.amount = Double(newValue) ?? 0.0
+                                }
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
                         
                     }
                     .padding()
@@ -82,7 +82,6 @@ struct PortfolioView: View {
                 
                 Spacer()
             }
-            
             .navigationTitle("Edit Portfolio")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -98,8 +97,6 @@ struct PortfolioView: View {
                             if showChekMark {
                                 Image(systemName: "checkmark")
                             }
-        
-                            
                             Button("SAVE") {
                                 saveButtonPressed()
                             }
@@ -108,13 +105,8 @@ struct PortfolioView: View {
                             )
                         }
                         .font(.headline)
-
-
                     }
-                
-                
             }
-            
         }
     }
     

@@ -35,6 +35,10 @@ struct CoinModel: Codable, Identifiable, Equatable {
         guard let currentHoldings = currentHoldings else { return nil }
         return currentPrice * currentHoldings
     }
+    
+    var rank: Int {
+        return Int(marketCapRank ?? 0) 
+    }
 }
 
 
